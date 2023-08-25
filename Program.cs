@@ -18,14 +18,15 @@ namespace SystemMaintenance
 
         static readonly string logFilePath = Path.Combine(Path.GetTempPath(), "systemrevive-logs.txt");
 
-        static void Main(int defaultWidth, int defaultHeight)
+        static void Main(string[] args)
         {
-            // Get the handle of the console window
+            int defaultWidth = 50;
+            int defaultHeight = 40;
             IntPtr handle = GetConsoleWindow();
 
             // Get the screen size
-            int screenWidth = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-            int screenHeight = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
 
             // Position the console window to the center
             MoveWindow(handle, (screenWidth - Console.WindowWidth * 8) / 2, (screenHeight - Console.WindowHeight * 12) / 2, Console.WindowWidth * 8, Console.WindowHeight * 12, true);
