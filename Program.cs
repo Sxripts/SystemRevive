@@ -236,7 +236,7 @@ namespace SystemMaintenance
                     if (Directory.Exists(path))
                     {
                         LogAndPrint($"Cleaning {description}...");
-                        DirectoryInfo di = new DirectoryInfo(path);
+                        DirectoryInfo di = new(path);
 
                         FileInfo[] files = di.GetFiles();
                         DirectoryInfo[] directories = di.GetDirectories();
@@ -348,7 +348,7 @@ namespace SystemMaintenance
                             string value = key.GetValue(appName).ToString();
                             string executablePath = value.Split(' ')[0].Trim('"');
 
-                            Console.WriteLine($"{appName.Replace('-', ' ').PadRight(50)} : {executablePath}"); // Replace '-' with a space
+                            Console.WriteLine($"{appName.Replace('-', ' '),-50} : {executablePath}");
                         }
                     }
                 }
