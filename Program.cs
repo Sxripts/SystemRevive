@@ -18,10 +18,10 @@ namespace SystemMaintenance
 
         static readonly string logFilePath = Path.Combine(Path.GetTempPath(), "systemrevive-logs.txt");
 
-        static void Main(string[] args)
+        static void Main()
         {
             int defaultWidth = 50;
-            int defaultHeight = 40;
+            int defaultHeight = 20;
             IntPtr handle = GetConsoleWindow();
 
             // Get the screen size
