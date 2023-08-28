@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using static System.Windows.Forms.Design.AxImporter;
+using System.Runtime.CompilerServices;
 
 namespace SystemMaintenance
 {
@@ -18,8 +19,7 @@ namespace SystemMaintenance
         static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
         static readonly string logFilePath = Path.Combine(Path.GetTempPath(), "systemrevive-logs.txt");
-
-        static void Main()
+        static async Task Main()
         {
             Console.BufferWidth = 1000;
             Console.BufferHeight = 1000;
@@ -63,29 +63,29 @@ namespace SystemMaintenance
                         case 1:
                             Console.Clear();
                             SetConsoleSize(170, 40);
-                            FlushDNS();
+                            await FlushDNS();
                             break;
                         case 2:
                             Console.Clear();
                             SetConsoleSize(170, 40);
-                            RenewIP();
+                            await RenewIP();
                             break;
                         case 3:
                             Console.Clear();
                             SetConsoleSize(170, 40);
-                            _ = CleanTemp();
+                            await CleanTemp();
                             break;
                         case 4:
                             Console.Clear();
                             SetConsoleSize(170, 40);
-                            CleanWindowsUpdateCache();
+                            await CleanWindowsUpdateCache();
                             break;
                         case 5:
                             if (IsAdministrator())
                             {
                                 Console.Clear();
                                 SetConsoleSize(170, 40);
-                                CleanUnnecessarySystemFiles();
+                                await CleanUnnecessarySystemFiles();
                             }
                             else
                             {
@@ -95,14 +95,12 @@ namespace SystemMaintenance
                             break;
                         case 6:
                             Console.Clear();
-                            SetConsoleSize(170, 40);
+                            SetConsoleSize(200, 50);
                             LookAtStartupApps();
                             break;
                         default:
                             Console.WriteLine("Invalid option!");
                             SetConsoleSize(170, 40);
-                            Thread.Sleep(2000);
-                            Console.Clear();
                             break;
                     }
                     Console.WindowWidth = defaultWidth;
@@ -134,7 +132,7 @@ namespace SystemMaintenance
                 MoveWindow(handle, x, y, windowWidth, windowHeight, true);
             }
 
-            static async void FlushDNS()
+            static async Task FlushDNS()
             {
                 Process.Start(new ProcessStartInfo("ipconfig", "/flushdns") { CreateNoWindow = true });
                 Console.Clear();
@@ -145,7 +143,7 @@ namespace SystemMaintenance
                 DisplayNavigationOptions();
             }
 
-            static async void RenewIP()
+            static async Task RenewIP()
             {
                 Process.Start(new ProcessStartInfo("ipconfig", "/renew") { CreateNoWindow = true });
                 Console.Clear();
@@ -208,7 +206,7 @@ namespace SystemMaintenance
                 DisplayNavigationOptions();
             }
 
-            static void CleanWindowsUpdateCache()
+            static async Task CleanWindowsUpdateCache()
             {
                 Console.WriteLine("Warning: This action may disrupt ongoing Windows Updates.");
                 Console.WriteLine("Do you want to proceed? (Y/N)");
@@ -218,8 +216,12 @@ namespace SystemMaintenance
                 {
                     StopWindowsServices();
                     StartWindowsServices();
-
+                    Console.Clear();
                     Console.WriteLine("Windows Update Cache cleaned successfully!");
+                    await Task.Delay(2000);
+                    Console.Clear();
+
+                    DisplayNavigationOptions();
                 }
                 else
                 {
@@ -245,11 +247,16 @@ namespace SystemMaintenance
                 }
             }
 
-            static void CleanUnnecessarySystemFiles()
+            static async Task CleanUnnecessarySystemFiles()
             {
                 CleanFolder(@"C:\ProgramData\Microsoft\Windows\WER", "Windows Error Reporting Files");
                 CleanFolder(@"C:\Windows.old", "Old Windows Installation Files");
+                Console.Clear();
                 LogAndPrint("Unnecessary system files cleaned successfully!");
+                await Task.Delay(2000);
+                Console.Clear();
+
+                DisplayNavigationOptions();
             }
 
             static void CleanFolder(string path, string description)
@@ -329,29 +336,7 @@ namespace SystemMaintenance
 
                 Console.WriteLine(new string(' ', Console.WindowWidth - 1)); // End line with space instead of '-'
 
-                Console.WriteLine("Choose an option:");
-                Console.WriteLine("1. Go back");
-                Console.WriteLine("2. Exit");
-
-                if (!int.TryParse(Console.ReadLine(), out int navigationChoice))
-                {
-                    Console.WriteLine("Invalid input! Please enter a number.");
-                }
-
-                switch (navigationChoice)
-                {
-                    case 1:
-                        Console.Clear();
-                        return; // Go back to the main menu
-                    case 2:
-                        Environment.Exit(0); // Exit the program
-                        break;
-                    default:
-                        Console.WriteLine("Invalid option!");
-                        Thread.Sleep(2000);
-                        Console.Clear();
-                        break;
-                }
+                DisplayNavigationOptions();
             }
 
             static void PrintStartupAppsFromRegistry(string[] paths, RegistryKey rootKey)
@@ -378,7 +363,7 @@ namespace SystemMaintenance
             }
 
 
-            static void DisplayNavigationOptions()
+            static async void DisplayNavigationOptions()
             {
                 Console.WriteLine("Choose an option:");
                 Console.WriteLine("1. Go back");
@@ -392,13 +377,15 @@ namespace SystemMaintenance
                 switch (navigationChoice)
                 {
                     case 1:
-                        // Code to go back to the main menu
+                        Console.Clear();
                         break;
                     case 2:
                         Environment.Exit(0);
                         break;
                     default:
                         Console.WriteLine("Invalid option!");
+                        await Task.Delay(2000);
+                        Console.Clear();
                         break;
                 }
             }
