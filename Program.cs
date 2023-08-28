@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Security.Principal;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using static System.Windows.Forms.Design.AxImporter;
 
 namespace SystemMaintenance
 {
@@ -27,7 +28,7 @@ namespace SystemMaintenance
             int defaultHeight = 20;
 
             // Set the default window size
-            SetConsoleSize(50, 20);
+            SetConsoleSize(70, 20);
 
             // Get the screen size
             int screenWidth = Screen.PrimaryScreen.Bounds.Width;
@@ -72,7 +73,7 @@ namespace SystemMaintenance
                         case 3:
                             Console.Clear();
                             SetConsoleSize(170, 40);
-                            CleanTemp();
+                            _ = CleanTemp();
                             break;
                         case 4:
                             Console.Clear();
@@ -136,17 +137,23 @@ namespace SystemMaintenance
             static async void FlushDNS()
             {
                 Process.Start(new ProcessStartInfo("ipconfig", "/flushdns") { CreateNoWindow = true });
+                Console.Clear();
                 Console.WriteLine("DNS flushed successfully!");
                 await Task.Delay(2000);
                 Console.Clear();
+
+                DisplayNavigationOptions();
             }
 
             static async void RenewIP()
             {
                 Process.Start(new ProcessStartInfo("ipconfig", "/renew") { CreateNoWindow = true });
+                Console.Clear();
                 Console.WriteLine("IP renewed successfully!");
                 await Task.Delay(2000);
                 Console.Clear();
+
+                DisplayNavigationOptions();
             }
 
             static async Task CleanTemp()
@@ -193,10 +200,12 @@ namespace SystemMaintenance
                 }
 
                 await Task.WhenAll(tasks);
-
+                Console.Clear();
                 Console.WriteLine("%Temp% cleaned successfully!");
                 await Task.Delay(2000);
                 Console.Clear();
+
+                DisplayNavigationOptions();
             }
 
             static void CleanWindowsUpdateCache()
@@ -365,6 +374,32 @@ namespace SystemMaintenance
                             Console.WriteLine($"{appName.Replace('-', ' '),-50} : {executablePath}");
                         }
                     }
+                }
+            }
+
+
+            static void DisplayNavigationOptions()
+            {
+                Console.WriteLine("Choose an option:");
+                Console.WriteLine("1. Go back");
+                Console.WriteLine("2. Exit");
+
+                if (!int.TryParse(Console.ReadLine(), out int navigationChoice))
+                {
+                    Console.WriteLine("Invalid input! Please enter a number.");
+                }
+
+                switch (navigationChoice)
+                {
+                    case 1:
+                        // Code to go back to the main menu
+                        break;
+                    case 2:
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        Console.WriteLine("Invalid option!");
+                        break;
                 }
             }
 
