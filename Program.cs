@@ -20,17 +20,18 @@ namespace SystemMaintenance
 
         static void Main()
         {
-            int defaultWidth = 50;
+            Console.BufferWidth = 1000;
+            Console.BufferHeight = 1000;
+
+            int defaultWidth = 70;
             int defaultHeight = 20;
-            IntPtr handle = GetConsoleWindow();
+
+            // Set the default window size
+            SetConsoleSize(50, 20);
 
             // Get the screen size
             int screenWidth = Screen.PrimaryScreen.Bounds.Width;
             int screenHeight = Screen.PrimaryScreen.Bounds.Height;
-
-            // Position the console window to the center
-            MoveWindow(handle, (screenWidth - Console.WindowWidth * 8) / 2, (screenHeight - Console.WindowHeight * 12) / 2, Console.WindowWidth * 8, Console.WindowHeight * 12, true);
-
 
             while (true)
             {
@@ -60,34 +61,29 @@ namespace SystemMaintenance
                     {
                         case 1:
                             Console.Clear();
-                            Console.WindowWidth = 170;
-                            Console.WindowHeight = 40;
+                            SetConsoleSize(170, 40);
                             FlushDNS();
                             break;
                         case 2:
                             Console.Clear();
-                            Console.WindowWidth = 170;
-                            Console.WindowHeight = 40;
+                            SetConsoleSize(170, 40);
                             RenewIP();
                             break;
                         case 3:
                             Console.Clear();
-                            Console.WindowWidth = 170;
-                            Console.WindowHeight = 40;
+                            SetConsoleSize(170, 40);
                             CleanTemp();
                             break;
                         case 4:
                             Console.Clear();
-                            Console.WindowWidth = 170;
-                            Console.WindowHeight = 40;
+                            SetConsoleSize(170, 40);
                             CleanWindowsUpdateCache();
                             break;
                         case 5:
                             if (IsAdministrator())
                             {
                                 Console.Clear();
-                                Console.WindowWidth = 170;
-                                Console.WindowHeight = 40;
+                                SetConsoleSize(170, 40);
                                 CleanUnnecessarySystemFiles();
                             }
                             else
@@ -98,14 +94,12 @@ namespace SystemMaintenance
                             break;
                         case 6:
                             Console.Clear();
-                            Console.WindowWidth = 170;
-                            Console.WindowHeight = 40;
+                            SetConsoleSize(170, 40);
                             LookAtStartupApps();
                             break;
                         default:
                             Console.WriteLine("Invalid option!");
-                            Console.WindowWidth = 170;
-                            Console.WindowHeight = 40;
+                            SetConsoleSize(170, 40);
                             Thread.Sleep(2000);
                             Console.Clear();
                             break;
@@ -119,6 +113,25 @@ namespace SystemMaintenance
                 }
             }
 
+            static void SetConsoleSize(int width, int height)
+            {
+                IntPtr handle = GetConsoleWindow();
+
+                int fontWidth = 8;
+                int fontHeight = 12;
+                int windowWidth = width * fontWidth;
+                int windowHeight = height * fontHeight;
+
+                int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+                int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+                // Center the window on the screen
+                int x = (screenWidth - windowWidth) / 2;
+                int y = (screenHeight - windowHeight) / 2;
+
+                // Resize and move the window
+                MoveWindow(handle, x, y, windowWidth, windowHeight, true);
+            }
 
             static async void FlushDNS()
             {
